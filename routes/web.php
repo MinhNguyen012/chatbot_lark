@@ -20,3 +20,5 @@ Route::get('/', function () {
 Route::post("/chatbot", [ChatBotController::class,"sendMessageToGroup"]);
 Route::get("/a", [ChatBotController::class,"hello"]);
 Route::post('/lark-bot', [ChatBotController::class,'handleMessage']);
+
+Route::get('/clickme' , [ChatBotController::class,'getView']);

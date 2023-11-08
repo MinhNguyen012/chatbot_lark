@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as RequestGuzz;
+use GuzzleHttp\Psr7\Stream;
+use GuzzleHttp\Psr7\stream_for;
+
 
 class ChatBotController extends Controller
 {
@@ -25,7 +29,7 @@ class ChatBotController extends Controller
         $response = $client->request('GET', 'https://open.larksuite.com/open-apis/im/v1/chats', [
             'headers' => [
                  //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
-                'Authorization' => 'Bearer t-g205b7aaUVDAQBXQLCJ5L4A7QVOO5ZHO27AD5HXT',
+                'Authorization' => 'Bearer t-g205b82UX4CG6QIS3UGXCUFCY45XLR3CWWJZLUIL',
                 
             ],
         ]);
@@ -35,29 +39,65 @@ class ChatBotController extends Controller
 
     public function sendmessageToGroup(Request $request) {
         $client = new Client();
+        switch($request->msg_type){
+            case("text"): 
+                $data =  '{"text":' . '"' . $request->content . '"' .'}';
         
-        $response = $client->request('POST', 'https://open.larksuite.com/open-apis/im/v1/messages', [
-            'headers' => [
-                 //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
-                'Authorization' => 'Bearer t-g205b7aaUVDAQBXQLCJ5L4A7QVOO5ZHO27AD5HXT',
-                'Content-Type' => 'application/json; charset=utf-8',
-            ],
-            'query' => [
-                // receive_id_type có thể là user_id, chat_id, open_id thay đổi tùy theo yêu cầu
-                'receive_id_type' => 'chat_id',
-            ],
-            "json" => [
-                // receive_id là token chat_id được lấy trong function getAllChats
-                // msg_type có nhiều dạng như text, post, file 
-                //content là nội dung của messenger truyền dưới dạng json
-                "receive_id" => $request->receive_id,
-                "msg_type" => $request->msg_type,
-                "content" => $request->content,
-            ]
-        ]);
+                $response = $client->request('POST', 'https://open.larksuite.com/open-apis/im/v1/messages', [
+                    'headers' => [
+                        //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
+                        'Authorization' => 'Bearer t-g205b85JR2SMSUQQOUCC4C6OWZJFNYYJMGONB33W',
+                        'Content-Type' => 'application/json; charset=utf-8',
+                    ],
+                    'query' => [
+                        // receive_id_type có thể là user_id, chat_id, open_id thay đổi tùy theo yêu cầu
+                        'receive_id_type' => 'chat_id',
+                    ],
+                    "json" => [
+                        // receive_id là token chat_id được lấy trong function getAllChats
+                        // msg_type có nhiều dạng như text, post, file 
+                        //content là nội dung của messenger truyền dưới dạng json
+                        "receive_id" => $request->receive_id,
+                        "msg_type" => $request->msg_type,
+                        "content" => stripslashes($data),
+                    ]
+                ]);
+        
+                return json_decode($response->getBody(), true);
+                break;
+            case("interactive"): 
+                    // data test for postman:  {\"config\":{\"wide_screen_mode\":true},\"header\":{\"title\":{\"tag\":\"plain_text\",\"content\":\"A leave request requires your approval\"}},\"elements\":[{\"tag\":\"div\",\"fields\":[{\"is_short\":true,\"text\":{\"tag\":\"lark_md\",\"content\":\"**Applicant**\\nWang Xiaolei\"}},{\"is_short\":true,\"text\":{\"tag\":\"lark_md\",\"content\":\"**Leave type:**\\nAnnual leave\"}},{\"is_short\":false,\"text\":{\"tag\":\"lark_md\",\"content\":\"\"}},{\"is_short\":false,\"text\":{\"tag\":\"lark_md\",\"content\":\"**Time:**\\nApril 8, 2020 to April 10, 2020 (3 days)\"}},{\"is_short\":false,\"text\":{\"tag\":\"lark_md\",\"content\":\"\"}},{\"is_short\":true,\"text\":{\"tag\":\"lark_md\",\"content\":\"**Notes**\\nReturn to hometown for a family emergency\"}}]},{\"tag\":\"hr\"},{\"tag\":\"action\",\"layout\":\"bisected\",\"actions\":[{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"Approve\"},\"type\":\"primary\",\"value\":{\"chosen\":\"approve\"}},{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"Reject\"},\"type\":\"primary\",\"value\":{\"chosen\":\"decline\"}}]}]}
+                    $data =  $request->content;
+                    $response = $client->request('POST', 'https://open.larksuite.com/open-apis/im/v1/messages', [
+                        'headers' => [
+                            //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
+                            'Authorization' => 'Bearer t-g205b85JR2SMSUQQOUCC4C6OWZJFNYYJMGONB33W',
+                            'Content-Type' => 'application/json; charset=utf-8',
+                        ],
+                        'query' => [
+                            // receive_id_type có thể là user_id, chat_id, open_id thay đổi tùy theo yêu cầu
+                            'receive_id_type' => 'chat_id',
+                        ],
+                        "json" => [
+                            // receive_id là token chat_id được lấy trong function getAllChats
+                            // msg_type có nhiều dạng như text, post, file 
+                            //content là nội dung của messenger truyền dưới dạng json
+                            "receive_id" => $request->receive_id,
+                            "msg_type" => $request->msg_type,
+                            "content" => stripslashes($data),
+                        ]
+                    ]);
+            
+                    return json_decode($response->getBody(), true);
+                    break;
 
-        return json_decode($response->getBody(), true);
+            default: 
+                return json_encode(["messenger" => "Khong co case phu hop"]);
+                break;
+        }
     }
 
-
+    public function getView() {
+        return view('chatbot');
+    }
 }
