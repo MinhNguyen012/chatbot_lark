@@ -21,4 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/get-access', [ChatBotController::class,'getTenantAccessToken']);
 Route::get('/get-chats', [ChatBotController::class,'getAllChats']);
-Route::post('/send-message', [ChatBotController::class,'sendmessageToGroup']);
+Route::post('/send-message', [ChatBotController::class,'sendmessageToGroup'])->name("send-messenger");

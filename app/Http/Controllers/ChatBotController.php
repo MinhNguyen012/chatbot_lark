@@ -46,7 +46,7 @@ class ChatBotController extends Controller
                 $response = $client->request('POST', 'https://open.larksuite.com/open-apis/im/v1/messages', [
                     'headers' => [
                         //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
-                        'Authorization' => 'Bearer t-g205b85JR2SMSUQQOUCC4C6OWZJFNYYJMGONB33W',
+                        'Authorization' => 'Bearer t-g205b88bYB4453JF4ZYCTET6ZLRZNFQEZCWG4CAC',
                         'Content-Type' => 'application/json; charset=utf-8',
                     ],
                     'query' => [
@@ -71,7 +71,7 @@ class ChatBotController extends Controller
                     $response = $client->request('POST', 'https://open.larksuite.com/open-apis/im/v1/messages', [
                         'headers' => [
                             //dạng của author : "Bearer token_tenant" đổi nó bằng tenant token được lấy ở function getTenantAccessToken
-                            'Authorization' => 'Bearer t-g205b85JR2SMSUQQOUCC4C6OWZJFNYYJMGONB33W',
+                            'Authorization' => 'Bearer t-g205b88bYB4453JF4ZYCTET6ZLRZNFQEZCWG4CAC',
                             'Content-Type' => 'application/json; charset=utf-8',
                         ],
                         'query' => [
