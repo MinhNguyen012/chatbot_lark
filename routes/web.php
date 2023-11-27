@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\EventLarkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,3 +23,5 @@ Route::get("/a", [ChatBotController::class,"hello"]);
 Route::post('/lark-bot', [ChatBotController::class,'handleMessage']);
 
 Route::get('/clickme' , [ChatBotController::class,'getView']);
+Route::get('/clickme' , [ChatBotController::class,'getView']);
+Route::post('/callback_lark',[EventLarkController::class,'callback_lark']);
